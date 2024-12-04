@@ -76,16 +76,18 @@ func (c *TaskConsumer) worker(ctx context.Context) {
 			}
 
 			// 爬取数据
-			hotel, err := c.crawler.Crawl(ctx, &task)
+			hotels, err := c.crawler.Crawl(ctx, &task)
 			if err != nil {
 				fmt.Printf("crawl task failed: %v\n", err)
 				continue
 			}
 
 			// 保存数据
-			if err := c.storage.SaveHotel(ctx, hotel); err != nil {
-				fmt.Printf("save hotel failed: %v\n", err)
-				continue
+			for _, hotel := range hotels {
+				if err := c.storage.SaveHotel(ctx, hotel); err != nil {
+					fmt.Printf("save hotel failed: %v\n", err)
+					continue
+				}
 			}
 		}
 	}
