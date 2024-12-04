@@ -39,10 +39,15 @@ func (c *ConsumerCommand) Run(args []string) error {
 		return err
 	}
 
+	fmt.Printf("Starting consumer with workers: %d, queue: %s, storage: %s\n",
+		c.workers, c.queuePath, c.storagePath)
+
 	// 创建存储目录
 	if err := os.MkdirAll(filepath.Dir(c.storagePath), 0755); err != nil {
 		return fmt.Errorf("create storage directory failed: %w", err)
 	}
+
+	fmt.Printf("Creating storage at: %s\n", c.storagePath)
 
 	// 创建存储
 	store, err := storage.NewFileStorage(c.storagePath)
@@ -51,7 +56,10 @@ func (c *ConsumerCommand) Run(args []string) error {
 	}
 
 	// 创建队列
-	q, err := queue.NewFileQueue(c.queuePath[7:])
+	queueFile := c.queuePath[7:]
+	fmt.Printf("Opening queue at: %s\n", queueFile)
+
+	q, err := queue.NewFileQueue(queueFile)
 	if err != nil {
 		return fmt.Errorf("create queue failed: %w", err)
 	}
@@ -59,7 +67,7 @@ func (c *ConsumerCommand) Run(args []string) error {
 	// 创建消费者
 	cons := consumer.NewTaskConsumer(c.workers, q, store)
 
-	fmt.Printf("Starting consumer with %d workers\n", c.workers)
+	fmt.Printf("Starting to process tasks with %d workers...\n", c.workers)
 	if err := cons.Start(context.Background()); err != nil {
 		return fmt.Errorf("consumer failed: %w", err)
 	}

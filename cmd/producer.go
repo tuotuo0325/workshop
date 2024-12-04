@@ -36,6 +36,8 @@ func (c *ProducerCommand) Run(args []string) error {
 		return err
 	}
 
+	fmt.Printf("Starting producer with data file: %s, queue: %s\n", c.dataFile, c.queuePath)
+
 	// 检查任务文件是否存在
 	if _, err := os.Stat(c.dataFile); os.IsNotExist(err) {
 		return fmt.Errorf("task file not found: %s", c.dataFile)
@@ -47,6 +49,8 @@ func (c *ProducerCommand) Run(args []string) error {
 		return fmt.Errorf("create queue directory failed: %w", err)
 	}
 
+	fmt.Printf("Creating queue at: %s\n", queueFile)
+
 	// 创建队列
 	q, err := queue.NewFileQueue(queueFile)
 	if err != nil {
@@ -56,7 +60,7 @@ func (c *ProducerCommand) Run(args []string) error {
 	// 创建生产者
 	p := producer.NewTaskProducer(c.dataFile, q)
 
-	fmt.Printf("Starting producer with data file: %s\n", c.dataFile)
+	fmt.Printf("Starting to process tasks...\n")
 	if err := p.Start(context.Background()); err != nil {
 		return fmt.Errorf("producer failed: %w", err)
 	}
