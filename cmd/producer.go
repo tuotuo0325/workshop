@@ -25,7 +25,7 @@ func NewProducerCommand() *ProducerCommand {
 	}
 
 	c.fs.StringVar(&c.dataFile, "data", "tasks.json", "Tasks data file")
-	c.fs.StringVar(&c.queuePath, "queue", "file://queue.data", "Queue server address")
+	c.fs.StringVar(&c.queuePath, "queue", "data/queue.data", "Queue server address")
 
 	return c
 }
@@ -44,7 +44,7 @@ func (c *ProducerCommand) Run(args []string) error {
 	}
 
 	// 创建队列目录
-	queueFile := c.queuePath[7:]
+	queueFile := c.queuePath
 	if err := os.MkdirAll(filepath.Dir(queueFile), 0755); err != nil {
 		return fmt.Errorf("create queue directory failed: %w", err)
 	}

@@ -14,3 +14,9 @@ windows本地环境无法开启hyper-v，无法搭建docker服务，没有mysql�
 ## 每个任务只执行一次
     - 使用redis布隆过滤器过滤
     - 当前使用方案：使用文件记录任务执行状态
+
+# 生产者
+airbnb-cli.exe producer --data task.json --queue data/queue.data
+
+# 消费者
+airbnb-cli.exe consumer --workers 10 --queue data/queue.data --storage data/hotels.json

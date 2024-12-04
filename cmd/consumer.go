@@ -27,7 +27,7 @@ func NewConsumerCommand() *ConsumerCommand {
 	}
 
 	c.fs.IntVar(&c.workers, "workers", 10, "Number of worker threads")
-	c.fs.StringVar(&c.queuePath, "queue", "file://queue.data", "Queue server address")
+	c.fs.StringVar(&c.queuePath, "queue", "data/queue.data", "Queue server address")
 	c.fs.StringVar(&c.storagePath, "storage", "data/hotels.json", "Storage file path")
 
 	return c
@@ -56,7 +56,7 @@ func (c *ConsumerCommand) Run(args []string) error {
 	}
 
 	// 创建队列
-	queueFile := c.queuePath[7:]
+	queueFile := c.queuePath
 	fmt.Printf("Opening queue at: %s\n", queueFile)
 
 	q, err := queue.NewFileQueue(queueFile)
